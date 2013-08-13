@@ -1,14 +1,16 @@
-from sqlalchemy import Model, create_engine,Column, Integer, String, DateTime, Boolean
+from sqlalchemy import  create_engine,Column, Integer, String, DateTime, Boolean
 from utils import filename_by_guid
 from sqlalchemy.orm import sessionmaker
-
+from sqlalchemy.ext.declarative import declarative_base
 
 
 
 engine = create_engine('sqlite:///statistics.sqlite')
 Session = sessionmaker(bind=engine)
 
-class Picture(Model):
+Base = declarative_base()
+
+class Picture(Base):
 
 
     __tablename__ = 'pictures'
@@ -19,7 +21,7 @@ class Picture(Model):
     filename = Column(String)
     cstart= Column(DateTime)
     cfinish= Column(DateTime)
-    uploaded = Column(Boolean,create_constraint=False)
+    uploaded = Column(Boolean)
     ustart= Column(DateTime)
     ufinish= Column(DateTime)
     

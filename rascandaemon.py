@@ -17,7 +17,12 @@ import glob
 import logging
 import lockfile
 import time
-import datetime.datetime
+import datetime
+
+logger=logging.getLogger('rascandae')
+fh = logging.FileHandler('rascandae.log')
+fh.setLevel(logging.DEBUG)
+logger.addHandler(fh)
 
 from constants import EXTENSION,TIMEDELAY
 from state import Picture, Session
@@ -47,7 +52,7 @@ def get_request_name():
 
         request = request_files[0].split('.request')[0]
 
-        logging.info('Found %s request', request)
+        logger.info('Found %s request', request)
 
         return request
 
@@ -55,11 +60,11 @@ def get_request_name():
 
         return "DEFAULT"
 
-        logging.warning('There is no request file. Returning DEFAULT as filename')
+        logger.warning('There is no request file. Returning DEFAULT as filename')
 
     else:
 
-        logging.warning('There are multiple request files. Returning DEFAULT as filename')
+        logger.warning('There are multiple request files. Returning DEFAULT as filename')
 
         return "DEFAULT"
         
@@ -74,24 +79,26 @@ def clean_up():
 
     if len(requests) == 1:
 
-        logging.debug("Removing %s file", requests[0])
+        logger.debug("Removing %s file", requests[0])
 
         os.remove(requests[0])
 
     elif len(requests) >1:
 
-        logging.warning("There are multiple requsts files. Removing all")
+        logger.warning("There are multiple requsts files. Removing all")
 
         for req in requests:
-            logging.debug("Removing %s file", req)
+            logger.debug("Removing %s file", req)
             
             os.remove(req)
     else:
 
-        logging.warning("Couldn't find request file to remove")
+        logger.warning("Couldn't find request file to remove")
 
-    
-with daemon.DaemonContext():
+
+
+
+with daemon.DaemonContext(files_preserve=[fh.stream,], working_directory='/home/denis/programming/rascandae'):
 
     take_shot_lock = lockfile.FileLock('take_shot')
 
@@ -123,7 +130,7 @@ with daemon.DaemonContext():
                         
         except Exception,e:
 
-            logging.error(e)
+            logger.error(e)
                     
 
             
