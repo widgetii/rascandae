@@ -110,7 +110,7 @@ with daemon.DaemonContext(files_preserve=[fh.stream,], working_directory=WORKING
 
         try:
 
-            if check_request:
+            if check_request():
                 
                 if  not take_shot_lock.is_locked():
 
