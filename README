@@ -1,0 +1,25 @@
+This is a project for Aplix. 
+
+
+Original job description 
+
+
+We use Canon 1100D with Raspberry PI connected by USB to capture photos for orders while they laying on scales:
+
+http://info.aplix.ru/20130812_173012.jpg
+http://info.aplix.ru/20130812_173024.jpg
+http://info.aplix.ru/bd4ee424-b674-4e97-b95e-697339a094d0_1.jpg
+http://info.aplix.ru/ff84aba2-1cec-40e9-8b7a-dfba05ae8e40_1.jpg
+
+Capturing process is very simple now - while weighting operator click on special URL which consists IP of Raspberry device and downloading captured image to network folder. We plan to improve this process and make it fully automatic.
+
+We need to develop:
+1) Capture daemon which runs on Raspberry and use libgphoto2 to capture images and saved it on local Raspberry card. Daemon ensures that nobody will make concurrent requests to camera using it internal locks. Also daemon used to long-time capture process which invoked from HTTP API.
+2) Simple HTTP API to external applications (including our ERP system) to make photos with specific name and save it. API shall to have also function to show or download actual photo in present time. In first case HTTP request don't have to block application and immediately give HTTP 200 OK response while capture daemon will process all rest work.
+3) Captured images uploader to Amazon S3 launched by cron and makes all work within following conditions: camera not used more than 20 minutes and while uploading nobody will use camera. When camera need to be used while uploading process must be terminated and wait next 20 minutes. This ensures that Raspberry will upload images only camera don't make any work to increase performance.
+4) Small logging DB to store process work and times which consumed to capture and upload images.
+5) Simple HTML statistics page to show logging DB info for admin purposes.
+
+As a batch process this will take such small time as possible (now it takes about 6 sec without uploading to Amazon S3).
+
+End of original job description
