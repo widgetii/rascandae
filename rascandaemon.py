@@ -24,7 +24,7 @@ fh = logging.FileHandler('rascandae.log')
 fh.setLevel(logging.DEBUG)
 logger.addHandler(fh)
 
-from constants import EXTENSION,TIMEDELAY
+from constants import EXTENSION,TIMEDELAY, WORKING_DIRECTORY
 from state import Picture, Session
 from utils import filename_by_guid
 
@@ -98,7 +98,7 @@ def clean_up():
 
 
 
-with daemon.DaemonContext(files_preserve=[fh.stream,], working_directory='/home/denis/programming/rascandae'):
+with daemon.DaemonContext(files_preserve=[fh.stream,], working_directory=WORKING_DIRECTORY):
 
     take_shot_lock = lockfile.FileLock('take_shot')
 

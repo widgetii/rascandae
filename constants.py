@@ -1,3 +1,4 @@
+import os
 EXTENSION = '.jpg'
 TIMEDELAY = 1
 
@@ -10,3 +11,4 @@ BUCKET_NAME='rascandaedemo'
 
 PICFOLDER = './pictures'
 
+WORKING_DIRECTORY = os.environ['RASCANDAE_WORKING_DIR']
