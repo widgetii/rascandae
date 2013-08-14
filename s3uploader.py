@@ -80,6 +80,11 @@ def upload(picture,session, bucket):
     
     picture.mark_uploaded(ustart,ufinish)
 
+    if os.path.exists(picture.filename):
+
+        logger.debug("Deleting file %s", picture.filename)
+        os.remove(picture.filename)
+
     session.add(picture)
 
     
