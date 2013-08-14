@@ -134,6 +134,7 @@ def main():
                         pic = Picture(request_name,cstart,cfinish)
                         session.add(pic)
                         session.commit()
+                        clean_up()
                         
         except Exception,e:
 
