@@ -1,0 +1,59 @@
+Installing instructions
+
+Removing apache
+
+You need to install rcconf to disable apache2 as just removing didn't work
+
+$ sudo apt-get install rcconf
+
+Then run it as sudo 
+
+$rcconf
+
+and unselect apache2 from gui
+
+
+You need to install supervisord virtualenv  packages
+
+$ sudo apt-get install supervisor python-virtualenv 
+
+
+
+SOMEHOW GET THE rascandae repository or copy of code
+
+
+Then you need to copy supervisord.conf
+
+$sudo cp ./support/rascandae.conf /etc/supervisor/conf.d/
+
+
+
+This program depends on several python packages. And is supposed to be used with python virtualenv program
+
+
+So basically you should create virtualenv
+
+Inside rascandae folder
+
+/rascandae $ virtuaenv venv
+
+Then you should activate it
+
+$ source venv/bin/activate
+
+Then install necessary packages listed in requirements.txt
+
+$ pip install -r requirements.txt
+
+
+
+Reboot. All should be working
+
+
+Additional. Something appears to be listening on 9001 port so if you want supervisor web interface change port in /etc/supervisor/supervisor.conf
+
+By adding following two lines
+
+[inet_http_server]         ; inet (TCP) server disabled by default
+port=127.0.0.1:9222  
+
