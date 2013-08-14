@@ -36,7 +36,11 @@ def capture_into_filename(filename):
 
 def check_request():
 
-    return len(glob.glob('*.request'))>0
+    requests =glob.glob('*.request')
+
+    logger.debug('Found following requests %s',str(requests))
+
+    return len(requests)>0
 
 def get_request_name():
 
@@ -153,6 +157,7 @@ if __name__ =="__main__":
         ch = logging.StreamHandler()
         ch.setLevel(logging.DEBUG)
         logger.addHandler(ch)
+        logger.info("Starting Raspberry Pi Canon Camera Daemon")
         main()
     
 
