@@ -76,7 +76,7 @@ if __name__ == "__main__":
 
     session = Session()
 
-    unuploaded =session.query(Picture.uploaded ==False).all()
+    unuploaded =session.query(Picture).filter(Picture.uploaded ==False).all()
 
     logging.info('Found %d pictures to upload', len(unuploaded))
 
