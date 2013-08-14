@@ -6,10 +6,9 @@ import glob
 PORT = 5000
 
 
-
 app = Flask(__name__,static_url_path='/static',static_folder="./pictures/")
 
-app.debug=True
+app.debug=False
 
 @app.route('/take/<guid>')
 def make_photo(guid):
@@ -66,4 +65,4 @@ def status():
     
 if __name__ == "__main__":
 
-    app.run(port = PORT)
+    app.run(host='0.0.0.0',port = PORT)
