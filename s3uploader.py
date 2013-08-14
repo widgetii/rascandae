@@ -10,8 +10,10 @@ import os
 import lockfile
 import logging
 
-
-
+logger = logging.getLogger('rascandae')
+fh = logging.FileHandler('s3upload.log')
+fh.setLevel(logging.DEBUG)
+logger.addHandler(fh)
 
 
 
@@ -31,13 +33,19 @@ def check_if_idle():
 
     idle_flag =time.time()-os.path.getctime(PICFOLDER) > MIN_IDLE_TIME_BEFORE_UPLOAD
 
+    logger.debug("Checking if system is idle")
+
     take_shot_lock = lockfile.FileLock('take_shot')
 
     if idle_flag and (not take_shot_lock.is_locked()):
+
+        logger.debug("System is idle")
     
         return True
 
     else:
+
+        logger.debug("System is not idle")
         
         return False
 
@@ -53,6 +61,8 @@ def upload(picture,session):
 
     # We form prefix aka folder as YYYY/MM/ from ctime of picture file in question
     cdate = datetime.date.fromtimestamp(os.path.getctime(picture.filename))
+
+
     
     key_prefix="%s/%s/" %(cdate.year,cdate.month)
     
@@ -60,10 +70,15 @@ def upload(picture,session):
 
     k.key = key_prefix+os.path.basename(picture.filename)
 
+    logger.debug("Uploading %s to %s",picture.filename,k.key)
+    
     ustart = datetime.datetime.now()
     k.set_contents_from_filename(picture.filename)
     ufinish = datetime.datetime.now()
 
+
+
+    
     picture.mark_uploaded(ustart,ufinish)
 
     session.add(picture)
@@ -78,7 +93,7 @@ if __name__ == "__main__":
 
     unuploaded =session.query(Picture).filter(Picture.uploaded ==False).all()
 
-    logging.info('Found %d pictures to upload', len(unuploaded))
+    logger.debug('Found %d pictures to upload', len(unuploaded))
 
     
     for pic in unuploaded:
@@ -87,6 +102,8 @@ if __name__ == "__main__":
             upload(pic,session)
             session.commit()
         else:
+
+            logger("Exiting as system is busy")
 
             break
             
