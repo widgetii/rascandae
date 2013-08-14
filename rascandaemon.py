@@ -18,11 +18,9 @@ import logging
 import lockfile
 import time
 import datetime
+import argparse
 
 logger=logging.getLogger('rascandae')
-fh = logging.FileHandler('rascandae.log')
-fh.setLevel(logging.DEBUG)
-logger.addHandler(fh)
 
 from constants import EXTENSION,TIMEDELAY, WORKING_DIRECTORY
 from state import Picture, Session
@@ -96,9 +94,7 @@ def clean_up():
         logger.warning("Couldn't find request file to remove")
 
 
-
-
-with daemon.DaemonContext(files_preserve=[fh.stream,], working_directory=WORKING_DIRECTORY):
+def main():
 
     take_shot_lock = lockfile.FileLock('take_shot')
 
@@ -131,7 +127,30 @@ with daemon.DaemonContext(files_preserve=[fh.stream,], working_directory=WORKING
         except Exception,e:
 
             logger.error(e)
-                    
+    
+
+
+if __name__ =="__main__":
+    
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument("--daemonize", dest='daemonize', action="store_true" , default=False)
+
+    args = parser.parse_args()
+
+    if args.daemonize:
+        fh = logging.FileHandler('rascandae.log')
+        fh.setLevel(logging.DEBUG)
+        logger.addHandler(fh)
+
+        
+        with daemon.DaemonContext(files_preserve=[fh.stream,], working_directory=WORKING_DIRECTORY):
+        
+            main()
+
+    else:
+        main()
+    
 
             
         

@@ -11,4 +11,10 @@ BUCKET_NAME='rascandaedemo'
 
 PICFOLDER = './pictures'
 
-WORKING_DIRECTORY = os.environ['RASCANDAE_WORKING_DIR']
+if 'RASCANDAE_WORKING_DIR' in os.environ:
+    
+    WORKING_DIRECTORY = os.environ['RASCANDAE_WORKING_DIR']
+
+else:
+
+    WORKING_DIRECTORY ='/home/pi/rascandae/'
