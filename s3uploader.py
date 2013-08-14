@@ -11,14 +11,13 @@ import lockfile
 import logging
 
 logger = logging.getLogger('rascandae')
+logger.setLevel(logging.DEBUG)
 fh = logging.FileHandler('s3upload.log')
 fh.setLevel(logging.DEBUG)
 logger.addHandler(fh)
 
 
 
-conn = S3Connection(AWS_ACCESS_KEY,AWS_SECRET_KEY)
-bucket = conn.get_bucket(BUCKET_NAME)
 
 
 def check_if_idle():
@@ -51,7 +50,7 @@ def check_if_idle():
 
 
 
-def upload(picture,session):
+def upload(picture,session, bucket):
 
     '''
     This functions find file by guid and uploads it at s3
@@ -99,7 +98,9 @@ if __name__ == "__main__":
     for pic in unuploaded:
 
         if check_if_idle():
-            upload(pic,session)
+            conn = S3Connection(AWS_ACCESS_KEY,AWS_SECRET_KEY)
+            bucket = conn.get_bucket(BUCKET_NAME)
+            upload(pic,session,bucket)
             session.commit()
         else:
 
