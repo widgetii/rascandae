@@ -46,6 +46,14 @@ Then install necessary packages listed in requirements.txt
 $ pip install -r requirements.txt
 
 
+Use sudo crontab -e -u pi to edit crontable
+
+add line
+
+*/20 *  *    *   *    /home/pi/rascandae/cron.sh
+
+To check for images every 20 minutes
+
 
 Reboot. All should be working
 

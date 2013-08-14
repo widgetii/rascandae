@@ -19,4 +19,4 @@ else:
 
     WORKING_DIRECTORY ='/home/pi/rascandae/'
 
-MIN_IDLE_TIME_BEFORE_UPLOAD = 10 # Should be 1200= 20 min according to specs if less than that it's probably for testing
+MIN_IDLE_TIME_BEFORE_UPLOAD = 1200 # Should be 1200= 20 min according to specs if less than that it's probably for testing
