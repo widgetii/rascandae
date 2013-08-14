@@ -58,7 +58,7 @@ def upload(picture,session):
     
     k = Key(bucket)
 
-    k.key = key_prefix+picture.guid
+    k.key = key_prefix+os.path.basename(picture.filename)
 
     ustart = datetime.datetime.now()
     k.set_contents_from_filename(picture.filename)
