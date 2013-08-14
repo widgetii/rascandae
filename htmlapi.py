@@ -58,7 +58,7 @@ def get_picture_now():
     return """<html>
 <head></head>
     <body onLoad="setTimeout('window.location="/static/now.jpg"', 7000)">
-<h2>Подождите пока картинка обновиться</h2></body><html>
+<h2>Wait while image is updated</h2></body><html>
 
     """
 
