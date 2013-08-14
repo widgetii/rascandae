@@ -1,7 +1,10 @@
 from flask import Flask,url_for,redirect
+from utils import filename_by_guid
 from constants import EXTENSION
 import lockfile
 import glob
+import time
+import os
 
 PORT = 5000
 
@@ -33,6 +36,38 @@ def make_photo(guid):
 def get_picture(guid):
 
     return redirect(url_for('static',filename=guid+EXTENSION))
+
+@app.route('/now')
+def get_picture_now(guid):
+
+    fl = lockfile.FileLock('take_shot')
+
+    if not fl.is_locked():
+
+        with fl:
+
+            with open(guid +'.request','w') as request_file:
+
+                request_file.write(' ')
+
+        i =0
+        
+        while (not os.path.exists(filename_by_guid(guid))) and i <60:
+
+            time.sleep(1)
+            i+=1
+
+        if os.path.exists(filename_by_guid(guid)):
+
+            return redirect(url_for('static',filename=guid+EXTENSION))
+        else:
+            return "SOMETHING WRONG"
+
+    else:
+        return "BUSY"
+
+
+
 
 @app.route('/')
 def status():
