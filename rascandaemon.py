@@ -45,7 +45,7 @@ def check_request():
 
     requests =glob.glob('*.request')
 
-    logger.debug('Found following requests %s',str(requests))
+    #logger.debug('Found following requests %s',str(requests))
 
     return len(requests)>0
 
@@ -149,6 +149,13 @@ if __name__ =="__main__":
     parser.add_argument("--daemonize", dest='daemonize', action="store_true" , default=False)
 
     args = parser.parse_args()
+
+    take_shot_lock = lockfile.FileLock('take_shot')
+
+    if take_shot_lock.is_locked():
+
+        logger.warning("Found lock. Clearing it forcefully.")
+        take_shot_lock.break_lock()
 
     if args.daemonize:
         fh = logging.FileHandler('rascandae.log')
