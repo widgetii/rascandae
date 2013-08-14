@@ -54,22 +54,13 @@ def get_picture_now():
 
                 request_file.write(' ')
 
-        i =0
-        
-        while (not os.path.exists(filename_by_guid(guid))) and i <60:
 
-            time.sleep(1)
-            i+=1
+    return """<html>
+<head></head>
+    <body onLoad="setTimeout('window.location="/static/now.jpg"', 7000)">
+<h2>Подождите пока картинка обновиться</h2></body><html>
 
-        if os.path.exists(filename_by_guid(guid)):
-
-            return redirect(url_for('static',filename=guid+EXTENSION))
-        else:
-            return "SOMETHING WRONG"
-
-    else:
-        return "BUSY"
-
+    """
 
 
 
