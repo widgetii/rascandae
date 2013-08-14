@@ -34,7 +34,7 @@ def capture_into_filename(filename):
 
     logger.debug("Trying to save image to %s", filename)
 
-    if os.path.exist(filename):
+    if os.path.exists(filename):
         logger.warning("File %s already exists it will be overwritten", filename)
         
     subprocess.check_output(['sudo', 'gphoto2', ' -- force-overwrite --capture-image-and-download', '--filename', filename])
