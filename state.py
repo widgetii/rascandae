@@ -47,7 +47,7 @@ class Picture(Base):
         self.ufinish = ufinish
         
 
-    
+Base.metadata.create_all(engine)    
 
 
 
