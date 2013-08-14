@@ -32,6 +32,7 @@ def capture_into_filename(filename):
     Capturing image into filename
     '''
 
+    logger.debug("Trying to save image to %s", filename)
     subprocess.check_output(['sudo', 'gphoto2', '--capture-image-and-download', '--filename', filename]);
 
 
