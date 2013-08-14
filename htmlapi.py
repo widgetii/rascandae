@@ -38,7 +38,11 @@ def get_picture(guid):
     return redirect(url_for('static',filename=guid+EXTENSION))
 
 @app.route('/now')
-def get_picture_now(guid):
+def get_picture_now():
+
+    guid='now'
+    os.remove(filename_by_guid(guid))
+
 
     fl = lockfile.FileLock('take_shot')
 
