@@ -6,7 +6,7 @@ import glob
 import time
 import os
 
-PORT = 5000
+PORT = 80
 
 
 app = Flask(__name__,static_url_path='/static',static_folder="./pictures/")
@@ -41,7 +41,9 @@ def get_picture(guid):
 def get_picture_now():
 
     guid='now'
-    os.remove(filename_by_guid(guid))
+    
+    if os.path.exists(filename_by_guid(guid)):
+        os.remove(filename_by_guid(guid))
 
 
     fl = lockfile.FileLock('take_shot')
@@ -56,9 +58,15 @@ def get_picture_now():
 
 
     return """<html>
-<head></head>
-    <body onLoad="setTimeout('window.location="/static/now.jpg"', 7000)">
-<h2>Wait while image is updated</h2></body><html>
+     <head>
+    <script>
+    function redirect(){
+    window.location='/static/now.jpg'
+    }
+    </script>
+    </head>
+    <body onLoad="setTimeout('redirect()', 7000)">
+<h2>Wait 7s while image is updated</h2></body><html>
 
     """
 
