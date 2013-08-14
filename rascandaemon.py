@@ -21,6 +21,7 @@ import datetime
 import argparse
 
 logger=logging.getLogger('rascandae')
+logger.setLevel(logging.DEBUG)
 
 from constants import EXTENSION,TIMEDELAY, WORKING_DIRECTORY
 from state import Picture, Session
