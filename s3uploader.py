@@ -8,6 +8,9 @@ import datetime
 import time
 import os
 import lockfile
+import logging
+
+
 
 
 
@@ -72,7 +75,13 @@ def upload(picture,session):
 if __name__ == "__main__":
 
     session = Session()
-    for pic in Picture.query(Picture.uploaded ==False).all():
+
+    unuploaded =session.query(Picture.uploaded ==False).all()
+
+    logging.info('Found %d pictures to upload', len(unuploaded))
+
+    
+    for pic in unuploaded:
 
         if check_if_idle():
             upload(pic,session)
