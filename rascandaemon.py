@@ -149,6 +149,10 @@ if __name__ =="__main__":
             main()
 
     else:
+
+        ch = logging.StreamHandler()
+        ch.setLevel(logging.DEBUG)
+        logger.addHandler(ch)
         main()
     
 
