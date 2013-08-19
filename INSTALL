@@ -6,9 +6,9 @@ You need to install rcconf to disable apache2 as just removing didn't work
 
 $ sudo apt-get install rcconf
 
-Then run it as sudo 
+Then run it as root
 
-$rcconf
+$sudo  rcconf
 
 and unselect apache2 from gui
 
