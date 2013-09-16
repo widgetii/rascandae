@@ -25,6 +25,9 @@ sh = SMTPHandler(SMTP_SERVER, 'report@' + os.uname()[1],[ REPORT_EMAIL], 'Feed t
 
 sh.setLevel(logging.WARNING)
 
+def sorted_ls(path):
+    mtime = lambda f: os.stat(os.path.join(path, f)).st_mtime
+    return list(sorted(os.listdir(path), key=mtime))
 
 
 def check_if_idle():
@@ -36,8 +39,16 @@ def check_if_idle():
 
     
     """
+    ld =  sorted_ls(PICFOLDER)
+    if len(ld) > 0:
+        
+        modtime = os.path.getctime(os.path.join(PICFOLDER, ld[-1]))
+    else:
 
-    idle_flag =time.time()-os.path.getctime(PICFOLDER) > MIN_IDLE_TIME_BEFORE_UPLOAD
+        modtime = os.path.getctime(PICFOLDER)
+        
+
+    idle_flag =time.time()-modtime > MIN_IDLE_TIME_BEFORE_UPLOAD
     
     logger.debug("Checking if system is idle")
 
@@ -95,9 +106,6 @@ def upload(picture,session, bucket):
     session.add(picture)
 
     
-def sorted_ls(path):
-    mtime = lambda f: os.stat(os.path.join(path, f)).st_mtime
-    return list(sorted(os.listdir(path), key=mtime))
     
 
 
