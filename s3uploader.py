@@ -38,7 +38,7 @@ def check_if_idle():
     """
 
     idle_flag =time.time()-os.path.getctime(PICFOLDER) > MIN_IDLE_TIME_BEFORE_UPLOAD
-
+    
     logger.debug("Checking if system is idle")
 
     take_shot_lock = lockfile.FileLock('take_shot')
@@ -66,14 +66,15 @@ def upload(picture,session, bucket):
     '''
 
     # We form prefix aka folder as YYYY/MM/ from ctime of picture file in question
+
     cdate = datetime.date.fromtimestamp(os.path.getctime(picture.filename))
 
 
-    
+         
     key_prefix="%s/%s/" %(cdate.year,cdate.month)
     
     k = Key(bucket)
-
+         
     k.key = key_prefix+os.path.basename(picture.filename)
 
     logger.debug("Uploading %s to %s",picture.filename,k.key)
@@ -83,7 +84,7 @@ def upload(picture,session, bucket):
     ufinish = datetime.datetime.now()
 
     logger.debug("Finished uploading %s to %s",picture.filename,k.key)
-
+     
     
     picture.mark_uploaded(ustart,ufinish)
 
@@ -91,7 +92,6 @@ def upload(picture,session, bucket):
 
         logger.debug("Deleting file %s", picture.filename)
         os.remove(picture.filename)
-
     session.add(picture)
 
     
@@ -110,10 +110,20 @@ if __name__ == "__main__":
     for pic in unuploaded:
 
         if check_if_idle():
-            conn = S3Connection(AWS_ACCESS_KEY,AWS_SECRET_KEY)
-            bucket = conn.get_bucket(BUCKET_NAME)
-            upload(pic,session,bucket)
-            session.commit()
+            if os.path.exists(pic.filename): 
+                conn = S3Connection(AWS_ACCESS_KEY,AWS_SECRET_KEY)
+                bucket = conn.get_bucket(BUCKET_NAME)
+                upload(pic,session,bucket)
+                session.commit()
+            else:
+                logger.debug("Couldn't find %s, Removing record from db" )
+                try:
+                    
+                    session.delete(pic)
+                    session.commit()
+                except Exception, e:
+                    logger.debug('Failed to remove pic.  Error %s', str(e))
+                 
         else:
 
             logger("Exiting as system is busy")
