@@ -1,5 +1,5 @@
 
-from constants import BUCKET_NAME, AWS_ACCESS_KEY,AWS_SECRET_KEY,PICFOLDER, MIN_IDLE_TIME_BEFORE_UPLOAD, REPORT_EMAIL, SMTP_SERVER
+from constants import BUCKET_NAME, AWS_ACCESS_KEY,AWS_SECRET_KEY,PICFOLDER, MIN_IDLE_TIME_BEFORE_UPLOAD, REPORT_EMAIL, SMTP_SERVER, REPORT_ON_FREE_SPACE_LESS_THAN, DELETE_ON_FREE_SPACE_LESS_THAN
 from utils import filename_by_guid
 from boto.s3.connection import S3Connection
 from boto.s3.key import Key
@@ -23,7 +23,7 @@ logger.addHandler(fh)
 
 sh = SMTPHandler(SMTP_SERVER, 'report@' + os.uname()[1],[ REPORT_EMAIL], 'Feed tranform report')
 
-sh.setLevel(logging.ERROR)
+sh.setLevel(logging.WARNING)
 
 
 
@@ -95,6 +95,9 @@ def upload(picture,session, bucket):
     session.add(picture)
 
     
+def sorted_ls(path):
+    mtime = lambda f: os.stat(os.path.join(path, f)).st_mtime
+    return list(sorted(os.listdir(path), key=mtime))
     
 
 
@@ -102,9 +105,40 @@ if __name__ == "__main__":
 
     session = Session()
 
+    try:
+        fst = os.statvfs(PICFOLDER)
+        free_space = fst.f_frsize * fst.f_bavail
+
+        if free_space < REPORT_ON_FREE_SPACE_LESS_THAN:
+
+            logger.warning("There is only %d mb left, Recommended is %d", free_space / 1024 / 1024, REPORT_ON_FREE_SPACE_LESS_THAN / 1024 / 1024)
+
+        if free_space < DELETE_ON_FREE_SPACE_LESS_THAN:
+            logger.warning("Deleting picture files as system running out of space.  You can find list of deleted files in s3uploader.log")
+
+            for filename in sorted_ls(PICFOLDER):
+                fst = os.statvfs(PICFOLDER)
+                free_space = fst.f_frsize * fst.f_bavail
+
+                if free_space > DELETE_ON_FREE_SPACE_LESS_THAN:
+
+                    break
+
+                else:
+
+                    logger.info('Deleting %s to free up some space',  filename)
+
+                    os.remove(os.path.join(PICFOLDER, filename))
+                
+
+
+    except Exception, e:
+
+        logger.warning("Can't determine free space, or something else. Service may be deteriorated.  Check paths Error %s", str(e))
+
     unuploaded =session.query(Picture).filter(Picture.uploaded ==False).all()
 
-    logger.debug('Found %d pictures to upload', len(unuploaded))
+    logger.debug('Found %d pictures to upload in database', len(unuploaded))
 
     
     for pic in unuploaded:

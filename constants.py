@@ -15,6 +15,10 @@ REPORT_EMAIL = 'lyubimov.denis@gmail.com'
 
 SMTP_SERVER = 'noc.aplix.ru'
 
+REPORT_ON_FREE_SPACE_LESS_THAN =  500 * 1024 * 1024 # In bytes Default is 500mb
+
+DELETE_ON_FREE_SPACE_LESS_THAN = 100 * 1024 * 1024 # Defaulst is 100mb
+
 if 'RASCANDAE_WORKING_DIR' in os.environ:
     
     WORKING_DIRECTORY = os.environ['RASCANDAE_WORKING_DIR']
