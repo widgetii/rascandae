@@ -1,5 +1,5 @@
 
-from constants import BUCKET_NAME, AWS_ACCESS_KEY,AWS_SECRET_KEY,PICFOLDER, MIN_IDLE_TIME_BEFORE_UPLOAD
+from constants import BUCKET_NAME, AWS_ACCESS_KEY,AWS_SECRET_KEY,PICFOLDER, MIN_IDLE_TIME_BEFORE_UPLOAD, REPORT_EMAIL, SMTP_SERVER
 from utils import filename_by_guid
 from boto.s3.connection import S3Connection
 from boto.s3.key import Key
@@ -9,14 +9,21 @@ import time
 import os
 import lockfile
 import logging
+from logging.handlers import SMTPHandler
 
 logger = logging.getLogger('rascandae')
 logger.setLevel(logging.DEBUG)
 fh = logging.FileHandler('s3upload.log')
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 fh.setLevel(logging.DEBUG)
+fh.setFormatter(formatter)
 logger.addHandler(fh)
 
 
+
+sh = SMTPHandler(SMTP_SERVER, 'report@' + os.uname()[1],[ REPORT_EMAIL], 'Feed tranform report')
+
+sh.setLevel(logging.ERROR)
 
 
 
@@ -75,7 +82,7 @@ def upload(picture,session, bucket):
     k.set_contents_from_filename(picture.filename)
     ufinish = datetime.datetime.now()
 
-
+    logger.debug("Finished uploading %s to %s",picture.filename,k.key)
 
     
     picture.mark_uploaded(ustart,ufinish)
