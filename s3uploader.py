@@ -126,7 +126,7 @@ if __name__ == "__main__":
                  
         else:
 
-            logger("Exiting as system is busy")
+            logger.debug("Exiting as system is busy")
 
             break
             
