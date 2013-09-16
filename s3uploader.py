@@ -158,7 +158,7 @@ if __name__ == "__main__":
                 upload(pic,session,bucket)
                 session.commit()
             else:
-                logger.debug("Couldn't find %s, Removing record from db" )
+                logger.debug("Couldn't find %s, Removing record from db", pic.filename)
                 try:
                     
                     session.delete(pic)
