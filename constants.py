@@ -11,7 +11,7 @@ BUCKET_NAME='aplix.images'
 
 PICFOLDER = './pictures'
 
-REPORT_EMAIL = 'lyubimov.denis@gmail.com'
+REPORT_EMAIL = 'post@aplix.ru'
 
 SMTP_SERVER = 'noc.aplix.ru'
 
