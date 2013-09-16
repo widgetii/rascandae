@@ -11,6 +11,10 @@ BUCKET_NAME='aplix.images'
 
 PICFOLDER = './pictures'
 
+REPORT_EMAIL = 'lyubimov.denis@gmail.com'
+
+SMTP_SERVER = 'noc.aplix.ru'
+
 if 'RASCANDAE_WORKING_DIR' in os.environ:
     
     WORKING_DIRECTORY = os.environ['RASCANDAE_WORKING_DIR']
