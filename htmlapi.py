@@ -17,6 +17,11 @@ app.debug=False
 def make_photo(guid):
 
     fl = lockfile.FileLock('take_shot')
+    el = lockfile.FileLock('error')
+
+    if el.is_locked():
+
+        return "ERROR"
 
     if not fl.is_locked():
 
@@ -25,7 +30,7 @@ def make_photo(guid):
             with open(guid +'.request','w') as request_file:
 
                 request_file.write(' ')
-
+            
         return "OK"
 
     else:
@@ -102,5 +107,22 @@ def status():
 
     
 if __name__ == "__main__":
+    el = lockfile.FileLock('error')
+
+    if el.is_locked():
+
+        print "Found error lock.  Clearing it"
+
+        el.break_lock()
+
+        if el.is_locked():
+
+            raise NameError("Couldn't break error lock.  Exiting'")
+
+        else:
+
+            print "Cleared lock"
+
+    print "Starting webserver"
 
     app.run(host='0.0.0.0',port = PORT)

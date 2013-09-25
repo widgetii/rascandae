@@ -26,6 +26,7 @@ logger.setLevel(logging.DEBUG)
 from constants import EXTENSION,TIMEDELAY, WORKING_DIRECTORY
 from state import Picture, Session
 from utils import filename_by_guid
+from subprocess import CalledProcessError
 
 def capture_into_filename(filename):
     '''
@@ -109,6 +110,12 @@ def main():
 
     take_shot_lock = lockfile.FileLock('take_shot')
 
+    error_lock = lockfile.FileLock('error')
+    if error_lock.is_locked():
+
+        logger.debug('Error not resolved exiting. ')
+
+        return
 
     session = Session()
     while True:
@@ -128,7 +135,14 @@ def main():
 
                         cstart = datetime.datetime.now()
                         filename=filename_by_guid(request_name)
-                        capture_into_filename(filename)
+                        try:
+                            capture_into_filename(filename)
+                        except CalledProcessError, cse:
+
+                            error_lock.acquire()
+                            logger.error('Encoundered error while taking a shot, probably camera not found %s', str(cse))
+                            break
+                        
                         cfinish = datetime.datetime.now()
 
                         pic = Picture(request_name,cstart,cfinish)
@@ -137,7 +151,6 @@ def main():
                         clean_up()
                         
         except Exception,e:
-
             logger.error(e)
     
 
