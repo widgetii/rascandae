@@ -21,7 +21,7 @@ logger.addHandler(fh)
 
 
 
-sh = SMTPHandler(SMTP_SERVER, 'raspbpi@aplix.ru', 'Feed tranform report')
+sh = SMTPHandler(SMTP_SERVER, fromaddr='raspbpi@aplix.ru', toaddrs = REPORT_EMAIL, subject= 'Feed tranform report')
 
 sh.setLevel(logging.WARNING)
 
